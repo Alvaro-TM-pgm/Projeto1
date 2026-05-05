@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lista de Alunos</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 30px;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,.08);
+}
+
+input, button {
+  padding: 10px;
+  font-size: 16px;
+}
+
+input {
+  width: 70%;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+li {
+  padding: 10px;
+}
+
+li:nth-child(odd) {
+  background: #f0f0f0;
+}
+
+li:nth-child(even) {
+  background: #dfefff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Cadastro de Alunos</h2>
+
+  <input type="text" id="nome" placeholder="Digite o nome">
+  <button onclick="salvar()">Enviar</button>
+
+  <ul id="lista"></ul>
+</div>
+
+<script>
+const URL_SCRIPT = 
+"https://script.google.com/macros/s/AKfycbxBg_6yHy5dcTU_XUXe5p6wVAe8NRke8mbOzGmPCS4NRuFk8cvBELQCcLMVQNfr5N1HzQ/exec";
+
+async function salvar() {
+  const nome = document.getElementById("nome").value.trim();
+
+  if (!nome) return;
+
+  await fetch(URL_SCRIPT, {
+    method: "POST",
+    body: JSON.stringify({ nome }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  document.getElementById("nome").value = "";
+  carregar();
+}
+
+async function carregar() {
+  const res = await fetch(URL_SCRIPT);
+  const data = await res.json();
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  data.nomes.forEach(nome => {
+    const li = document.createElement("li");
+    li.textContent = nome;
+    lista.appendChild(li);
+  });
+}
+
+carregar();
+</script>
+
+</body>
+</html>
