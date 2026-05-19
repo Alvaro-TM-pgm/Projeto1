@@ -1,81 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Cadastro de Alunos</title>
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  padding: 30px;
-}
-
-.container {
-  max-width: 500px;
-  margin: auto;
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,.1);
-}
-
-h2 {
-  margin-top: 0;
-}
-
-input {
-  width: 70%;
-  padding: 10px;
-  font-size: 16px;
-}
-
-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
-}
-
-li {
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-li:nth-child(odd) {
-  background: #f0f0f0;
-}
-
-li:nth-child(even) {
-  background: #dfefff;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <h2>Cadastro de Alunos</h2>
-
-  <input type="text" id="nome" placeholder="Digite o nome">
-  
-  <button onclick="salvar()">
-    Enviar
-  </button>
-
-  <ul id="lista"></ul>
-
-</div>
-
 <script>
 
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwcLW1GRIL6HZuIjEl0XSGyrdl4qoP0hstJVgN7cAAomxFUwXA8V4IyB8a1bnT5PT4WSw/exec";
@@ -93,13 +15,14 @@ async function salvar() {
 
   try {
 
-    const form = new FormData();
-
-    form.append("nome", nome);
-
     const resposta = await fetch(URL_SCRIPT, {
       method: "POST",
-      body: form
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nome: nome
+      })
     });
 
     if (!resposta.ok) {
@@ -136,15 +59,17 @@ async function carregar() {
 
     lista.innerHTML = "";
 
-    data.nomes.forEach(nome => {
+    data.nomes
+      .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+      .forEach(nome => {
 
-      const li = document.createElement("li");
+        const li = document.createElement("li");
 
-      li.textContent = nome;
+        li.textContent = nome;
 
-      lista.appendChild(li);
+        lista.appendChild(li);
 
-    });
+      });
 
   } catch (erro) {
 
@@ -159,6 +84,3 @@ async function carregar() {
 carregar();
 
 </script>
-
-</body>
-</html>
